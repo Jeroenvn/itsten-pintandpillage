@@ -1,0 +1,38 @@
+services:
+  front-end:
+    build:
+      context: ./PintAndPillageFrontend
+    depends_on:
+      - back-end
+    networks:
+      - front-tier
+    ports:
+      - "8080:8080"
+  
+  back-end:
+    container_name: backend
+    build:
+      context: ./PintAndPillageJavaBackend
+    depends_on:
+      - db
+    networks:
+      - front-tier
+      - back-tier
+    links:
+      - "db"
+  
+  db:
+    container_name: database
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=PintAndPillage
+    ports:
+      - "5432:5432"
+    networks:
+      - back-tier
+
+networks:
+  front-tier:
+  back-tier:
